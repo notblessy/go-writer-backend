@@ -5,6 +5,7 @@ CREATE TABLE article_categories (
   description TEXT,
 
   is_active BOOLEAN DEFAULT 1,
+  created_by VARCHAR(64),
   created_at timestamp,
   updated_at timestamp
 );
@@ -20,6 +21,7 @@ CREATE TABLE articles (
   cover_image TEXT,
   status ENUM ('PUBLISHED', 'UNPUBLISHED','DRAFT') DEFAULT 'PUBLISHED',
   published_at timestamp,
+  created_by VARCHAR(64),
   created_at timestamp,
   updated_at timestamp
 );

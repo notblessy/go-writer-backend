@@ -31,6 +31,7 @@ func CreateArticleCategory(ginCtx *gin.Context, publisher *amqp.Publisher, dao *
 		Name:        requestBody.Name,
 		Slug:        slug,
 		Description: requestBody.Description,
+		CreatedBy:   requestBody.CreatedBy,
 	}
 
 	body, _ := json.Marshal(category)

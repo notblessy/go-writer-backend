@@ -12,6 +12,11 @@ func Routes(router *gin.RouterGroup, publisher *amqp.Publisher, logger *zap.Logg
 	router.POST("/categories", func(c *gin.Context) {
 		handlers.CreateArticleCategory(c, publisher, dao)
 	})
+
+	router.GET("/articles", func(c *gin.Context) {
+		handlers.FindArticleList(c, dao)
+	})
+
 	router.POST("/articles", func(c *gin.Context) {
 		handlers.CreateArticle(c, publisher, dao)
 	})

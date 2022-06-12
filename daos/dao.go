@@ -4,7 +4,7 @@ import (
 	"github.com/jmoiron/sqlx"
 	"github.com/notblessy/go-writter-backend/configs"
 	"github.com/notblessy/go-writter-backend/models"
-	"github.com/olivere/elastic"
+	"github.com/olivere/elastic/v7"
 )
 
 type DAO struct {
@@ -13,6 +13,7 @@ type DAO struct {
 
 	models.ArticleCategoryStore
 	models.ArticleStore
+	models.ArticleQueryStore
 }
 
 func NewStore() *DAO {
@@ -30,6 +31,7 @@ func NewStore() *DAO {
 		DB: db,
 
 		ArticleCategoryStore: NewArticleCategoryStore(db),
-		ArticleStore:         NewArticleStore(db),
+		ArticleStore:         NewArticleStore(db, esclient),
+		ArticleQueryStore:    NewArticleQueryStore(esclient),
 	}
 }

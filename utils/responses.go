@@ -22,6 +22,11 @@ func ResponseError(ginCtx *gin.Context, response *Response) {
 	ginCtx.JSON(http.StatusInternalServerError, response)
 }
 
+func ResponseNotFound(ginCtx *gin.Context, response *Response) {
+	defaultValueError(response)
+	ginCtx.JSON(http.StatusNotFound, response)
+}
+
 func defaultValueSuccess(response *Response) {
 	if response.Status == "" {
 		response.Status = "SUCCESS"

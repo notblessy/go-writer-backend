@@ -35,6 +35,7 @@ func CreateArticle(ginCtx *gin.Context, publisher *amqp.Publisher, dao *dao.DAO)
 		Body:       requestBody.Body,
 		CoverImage: requestBody.CoverImage,
 		Status:     requestBody.Status,
+		CreatedBy:  requestBody.CreatedBy,
 	}
 
 	body, _ := json.Marshal(article)
@@ -48,5 +49,27 @@ func CreateArticle(ginCtx *gin.Context, publisher *amqp.Publisher, dao *dao.DAO)
 	}
 
 	response.Data = gin.H{"mq": "[x] Message Sent for create article"}
+	utils.ResponseOK(ginCtx, response)
+}
+
+func FindArticleList(ginCtx *gin.Context, dao *dao.DAO) {
+	properties, err := dao.ArticleQueryStore.ArticleList(ginCtx)
+
+	response := new(utils.Response)
+
+	if err != nil && strings.Contains(err.Error(), "error retrieving") {
+		response.Message = err.Error()
+		utils.ResponseNotFound(ginCtx, response)
+		return
+	}
+
+	if err != nil && strings.Contains(err.Error(), "data not found") {
+		response.Message = err.Error()
+		utils.ResponseNotFound(ginCtx, response)
+		return
+	}
+
+	response.Data = properties
+
 	utils.ResponseOK(ginCtx, response)
 }

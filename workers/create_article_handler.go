@@ -29,7 +29,14 @@ func (c createArticleHandler) Handler(msg *message.Message) ([]*message.Message,
 		return nil, err
 	}
 
+	es, err := c.Dao.ArticleStore.IndexingArticle(articleSlug)
+
+	if err != nil {
+		return nil, err
+	}
+
 	log.Println("Create article handler received message:", msg.UUID, articleSlug)
+	log.Println("Success indexing to ES", msg.UUID, es)
 
 	msg = message.NewMessage(watermill.NewUUID(), []byte("message produced by structHandler"))
 	return message.Messages{msg}, nil
