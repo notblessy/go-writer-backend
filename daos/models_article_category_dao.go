@@ -19,7 +19,7 @@ func NewArticleCategoryStore(db *sqlx.DB) *ArticleCategoryStore {
 }
 
 // Insert data to table article category
-func (store *ArticleCategoryStore) CreateArticleCategory(category *models.ArticleCategoryDTO) (string, error) {
+func (store *ArticleCategoryStore) CreateArticleCategory(category *models.ArticleCategory) (string, error) {
 	category.IsActive = true
 	category.CreatedAt = time.Now()
 

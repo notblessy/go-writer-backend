@@ -10,6 +10,7 @@ type DAO struct {
 	*sqlx.DB
 
 	models.ArticleCategoryStore
+	models.ArticleStore
 }
 
 func NewStore() *DAO {
@@ -22,5 +23,6 @@ func NewStore() *DAO {
 		DB: db,
 
 		ArticleCategoryStore: NewArticleCategoryStore(db),
+		ArticleStore:         NewArticleStore(db),
 	}
 }

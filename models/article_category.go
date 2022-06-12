@@ -2,8 +2,7 @@ package models
 
 import "time"
 
-type ArticleCategoryDTO struct {
-	MessageType string     `json:"messageType"`
+type ArticleCategory struct {
 	ID          int        `db:"id" json:"id"`
 	Slug        string     `db:"slug" json:"slug"`
 	Name        string     `db:"name" json:"name"`
@@ -14,6 +13,6 @@ type ArticleCategoryDTO struct {
 }
 
 type ArticleCategoryStore interface {
-	CreateArticleCategory(category *ArticleCategoryDTO) (string, error)
+	CreateArticleCategory(category *ArticleCategory) (string, error)
 	// DeleteArticleCategory(slug string) error
 }

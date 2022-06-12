@@ -4,14 +4,20 @@ import (
 	"os"
 	"time"
 
+	"github.com/ThreeDotsLabs/watermill"
+	"github.com/ThreeDotsLabs/watermill-amqp/v2/pkg/amqp"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"github.com/notblessy/go-writter-backend/api/routes"
 	dao "github.com/notblessy/go-writter-backend/daos"
 	"github.com/notblessy/go-writter-backend/utils"
-	"github.com/streadway/amqp"
 
 	ginzap "github.com/gin-contrib/zap"
+)
+
+var (
+	amqpURI    = "amqp://guest:guest@localhost:5672/"
+	amqplogger = watermill.NewStdLogger(false, false)
 )
 
 func main() {
@@ -33,23 +39,18 @@ func main() {
 	dao := dao.NewStore()
 	server := gin.New()
 
-	conn, errConn := amqp.Dial("amqp://guest:guest@localhost:5672/")
-	if errConn != nil {
-		panic(errConn)
-	}
-	defer conn.Close()
+	amqpConfig := amqp.NewDurableQueueConfig(amqpURI)
 
-	ch, errConn := conn.Channel()
-	if errConn != nil {
-		panic(errConn)
+	publisher, err := amqp.NewPublisher(amqpConfig, amqplogger)
+	if err != nil {
+		panic(err)
 	}
-	defer ch.Close()
 
 	server.Use(ginzap.Ginzap(logger, time.RFC3339, true))
 	server.Use(ginzap.RecoveryWithZap(logger, true))
 
 	routeGroup := server.Group("")
-	routes.Routes(routeGroup, ch, logger, dao)
+	routes.Routes(routeGroup, publisher, logger, dao)
 
 	server.Run(":" + os.Getenv("PORT"))
 }

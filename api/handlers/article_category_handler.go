@@ -1,23 +1,24 @@
 package handlers
 
 import (
+	"encoding/json"
 	"fmt"
-	"log"
 	"strings"
 
+	"github.com/ThreeDotsLabs/watermill"
+	"github.com/ThreeDotsLabs/watermill-amqp/v2/pkg/amqp"
+	"github.com/ThreeDotsLabs/watermill/message"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
-	"github.com/goccy/go-json"
 	dao "github.com/notblessy/go-writter-backend/daos"
 	"github.com/notblessy/go-writter-backend/models"
 	"github.com/notblessy/go-writter-backend/utils"
 	"github.com/segmentio/ksuid"
-	"github.com/streadway/amqp"
 )
 
 // Handler for create new category
-func CreateArticleCategory(ginCtx *gin.Context, ch *amqp.Channel, dao *dao.DAO) {
-	var requestBody models.ArticleCategoryDTO
+func CreateArticleCategory(ginCtx *gin.Context, publisher *amqp.Publisher, dao *dao.DAO) {
+	var requestBody models.ArticleCategory
 	ginCtx.ShouldBindBodyWith(&requestBody, binding.JSON)
 
 	response := &utils.Response{}
@@ -26,43 +27,15 @@ func CreateArticleCategory(ginCtx *gin.Context, ch *amqp.Channel, dao *dao.DAO) 
 
 	slug := fmt.Sprintf(`%s-%s`, strings.ToLower(requestBody.Name), generateSlug)
 
-	category := &models.ArticleCategoryDTO{
-		MessageType: "create-category",
+	category := &models.ArticleCategory{
 		Name:        requestBody.Name,
 		Slug:        slug,
 		Description: requestBody.Description,
 	}
 
-	q, err := ch.QueueDeclare(
-		"ARTICLE-QUEUE",
-		false,
-		false,
-		false,
-		false,
-		nil,
-	)
-
-	if err != nil {
-		response.Message = err.Error()
-		utils.ResponseError(ginCtx, response)
-		return
-	}
-
 	body, _ := json.Marshal(category)
 
-	err = ch.Publish(
-		"",
-		q.Name,
-		false,
-		false,
-		amqp.Publishing{
-			ContentType: "application/json",
-			Body:        body,
-		})
-
-	log.Printf(" [x] Sent %s", body)
-
-	// categorySlug, err := dao.ArticleCategoryStore.CreateArticleCategory(category)
+	err := publisher.Publish("create_category", message.NewMessage(watermill.NewUUID(), body))
 
 	if err != nil {
 		response.Message = err.Error()
@@ -70,10 +43,6 @@ func CreateArticleCategory(ginCtx *gin.Context, ch *amqp.Channel, dao *dao.DAO) 
 		return
 	}
 
-	response.Data = gin.H{"mq": "[x] Message Sent"}
+	response.Data = gin.H{"mq": "[x] Message Sent for create category"}
 	utils.ResponseOK(ginCtx, response)
-}
-
-func String(body []byte) {
-	panic("unimplemented")
 }
