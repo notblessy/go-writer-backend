@@ -32,7 +32,7 @@ func (store *ArticleCategoryStore) CreateArticleCategory(category *models.Articl
 	}
 	query := fmt.Sprintf(`INSERT INTO article_categories (%s) VALUES (:%s)`, strings.Join(columns, ","), strings.Join(columns, ",:"))
 
-	_, err := store.NamedExec(query, category)
+	_, err := store.NamedExec(query, &category)
 
 	return category.Slug, err
 }

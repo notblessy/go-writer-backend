@@ -1,9 +1,13 @@
 package handlers
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
 
+	"github.com/ThreeDotsLabs/watermill"
+	"github.com/ThreeDotsLabs/watermill-amqp/v2/pkg/amqp"
+	"github.com/ThreeDotsLabs/watermill/message"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 	dao "github.com/notblessy/go-writter-backend/daos"
@@ -13,7 +17,7 @@ import (
 )
 
 // Handler for create new category
-func CreateArticleCategory(ginCtx *gin.Context, dao *dao.DAO) {
+func CreateArticleCategory(ginCtx *gin.Context, publisher *amqp.Publisher, dao *dao.DAO) {
 	var requestBody models.ArticleCategory
 	ginCtx.ShouldBindBodyWith(&requestBody, binding.JSON)
 
@@ -29,7 +33,9 @@ func CreateArticleCategory(ginCtx *gin.Context, dao *dao.DAO) {
 		Description: requestBody.Description,
 	}
 
-	categorySlug, err := dao.ArticleCategoryStore.CreateArticleCategory(category)
+	body, _ := json.Marshal(category)
+
+	err := publisher.Publish("create_category", message.NewMessage(watermill.NewUUID(), body))
 
 	if err != nil {
 		response.Message = err.Error()
@@ -37,6 +43,6 @@ func CreateArticleCategory(ginCtx *gin.Context, dao *dao.DAO) {
 		return
 	}
 
-	response.Data = gin.H{"slug": categorySlug}
+	response.Data = gin.H{"mq": "[x] Message Sent for create category"}
 	utils.ResponseOK(ginCtx, response)
 }

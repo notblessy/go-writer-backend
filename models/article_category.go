@@ -8,7 +8,6 @@ type ArticleCategory struct {
 	Name        string     `db:"name" json:"name"`
 	Description string     `db:"description" json:"description"`
 	IsActive    bool       `db:"is_active" json:"isActive"`
-	PublishedAt *time.Time `db:"published_at" json:"publishedAt"`
 	CreatedAt   time.Time  `db:"created_at" json:"createdAt"`
 	UpdatedAt   *time.Time `db:"updated_at" json:"updatedAt"`
 }

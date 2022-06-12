@@ -1,14 +1,18 @@
 package routes
 
 import (
+	"github.com/ThreeDotsLabs/watermill-amqp/v2/pkg/amqp"
 	"github.com/gin-gonic/gin"
 	"github.com/notblessy/go-writter-backend/api/handlers"
 	dao "github.com/notblessy/go-writter-backend/daos"
 	"go.uber.org/zap"
 )
 
-func Routes(router *gin.RouterGroup, logger *zap.Logger, dao *dao.DAO) {
+func Routes(router *gin.RouterGroup, publisher *amqp.Publisher, logger *zap.Logger, dao *dao.DAO) {
 	router.POST("/categories", func(c *gin.Context) {
-		handlers.CreateArticleCategory(c, dao)
+		handlers.CreateArticleCategory(c, publisher, dao)
+	})
+	router.POST("/articles", func(c *gin.Context) {
+		handlers.CreateArticle(c, publisher, dao)
 	})
 }
