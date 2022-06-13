@@ -1,5 +1,14 @@
 # go-writter-backend
 
+goWriter is a Backend article API based on Golang, Gin and Sqlx.
+
+## Tech Requirements
+
+- Go
+- Mysql
+- Elasticsearch
+- RabbitMQ
+
 ## How to Run
 
 ### Clone
