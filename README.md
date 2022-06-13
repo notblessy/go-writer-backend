@@ -14,10 +14,6 @@ $ git clone git@github.com:notblessy/go-writer-backend.git
 
 - Don't forget to set `.env` for web and workers (in directory `/workers`), you can copy from `env.sample`
 
-```sh
-$ make migrate-up
-```
-
 ### Database Migration
 
 - To migrate tables, ensure you create `Makefile` from `Makefile.sample` then run
