@@ -9,7 +9,7 @@ import (
 type Article struct {
 	ID          int        `db:"id" json:"id"`
 	Slug        string     `db:"slug" json:"slug"`
-	CategoryID  int        `db:"category_id" json:"categoryId"`
+	CategoryID  *int       `db:"category_id" json:"categoryId"`
 	Title       string     `db:"title" json:"title"`
 	Body        string     `db:"body" json:"body"`
 	CoverImage  string     `db:"cover_image" json:"coverImage"`
@@ -23,7 +23,7 @@ type Article struct {
 type ArticleDetail struct {
 	ID          int        `db:"id" json:"id"`
 	Slug        string     `db:"slug" json:"slug"`
-	Category    string     `db:"category" json:"category"`
+	Category    *string    `db:"category" json:"category"`
 	Title       string     `db:"title" json:"title"`
 	Body        string     `db:"body" json:"body"`
 	CoverImage  string     `db:"cover_image" json:"coverImage"`

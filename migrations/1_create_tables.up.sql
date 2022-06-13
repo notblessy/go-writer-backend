@@ -14,7 +14,6 @@ CREATE TABLE articles (
   id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
   slug VARCHAR(128),
   category_id INT,
-  FOREIGN KEY (category_id) REFERENCES article_categories(id) ON DELETE SET NULL,
 
   title VARCHAR(128),
   body TEXT,
