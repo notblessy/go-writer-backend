@@ -17,12 +17,12 @@ type ArticleStore struct {
 	*elastic.Client
 }
 
-// Initialization article article store
+// Initialization article store
 func NewArticleStore(db *sqlx.DB, es *elastic.Client) *ArticleStore {
 	return &ArticleStore{DB: db, Client: es}
 }
 
-// Insert data to table article article
+// Insert data to table article
 func (store *ArticleStore) CreateArticle(article *models.Article) (string, error) {
 	now := time.Now()
 	article.CreatedAt = time.Now()
