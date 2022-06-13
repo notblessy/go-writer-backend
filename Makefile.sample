@@ -1,0 +1,3 @@
+.PHONY: migrate-up
+migrate-up:
+	migrate -source file://migrations -database "mysql://root:root@tcp(localhost:3306)/go_writter_db" up
